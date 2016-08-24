@@ -31,15 +31,6 @@ Player.prototype.turn = function(){
   this.scoreTotal = this.turnTotal;
 }
 
-Player.prototype.rollOne = function(){
-
-  if (this.roll() === 1) {
-    this.turnTotal = 0;
-  } else {
-    this.roll()
-  }
-}
-
 var myPlayer = new Player("Player 1",0,0);
 myPlayer.turn();
 console.log("You scored: " + myPlayer.scoreTotal);
