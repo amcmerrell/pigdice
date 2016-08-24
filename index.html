@@ -5,23 +5,29 @@
     <link href="css/styles.css" rel="stylesheet" type="text/css">
     <script src="js/jquery-3.1.0.js"></script>
     <script src="js/scripts.js"></script>
-    <title>Template</title>
+    <title>Pig Dice</title>
   </head>
   <body>
     <div class="container">
       <h2>Pig Dice</h2>
-      <div>
+      <div id="start">
         <button id="play" type="button" class="btn btn-primary">Start game</button>
       </div>
-      <br>
-      <h4 id="roll-details"><h4>
-      <button id="roll" type="button" class="btn btn-success">Roll</button>
-      <button id="hold" type="button" class="btn btn-danger">Hold</button>
-      <h4 id="turn-details"><h4>
-      <h3>Scores</h3>
-      <ul id="scoreboard">
+      <div>
+        <h4 id="message"> </h4>
 
-      </ul>
+      </div>
+      <br>
+      <div id="in-progress">
+        <h4 id="roll-details"><h4>
+        <button id="roll" type="button" class="btn btn-success">Roll</button>
+        <button id="hold" type="button" class="btn btn-danger">Hold</button>
+        <h4 id="turn-details"><h4>
+        <h3>Scores</h3>
+        <ul id="scoreboard">
+
+        </ul>
+      </div>
     </div>
   </body>
 </html>
