@@ -2,23 +2,29 @@
 var numberOfPlayers = 0;
 var playerArray = [];
 var playerWins = false;
+var started = false;
+var turn = 0;
 
-function Player(name, turnTotal, scoreTotal) {
+function Player(name) {
   this.nameOfPlayer = name;
-  this.turnTotal = turnTotal;
-  this.scoreTotal = scoreTotal;
+  this.currentRoll = 0;
+  this.turnTotal = 0;
+  this.scoreTotal = 0;
 }
 
 Player.prototype.roll = function(){
-  var roll = Math.floor((Math.random() * 6) + 1);
-  alert(this.nameOfPlayer + " you rolled a " + roll);
-  if (roll !== 1) {
-    this.turnTotal += roll;
-    return false;
-  } else {
-    this.turnTotal = 0;
-    return true;
-  }
+  this.currentRoll = Math.floor((Math.random() * 6) + 1);
+}
+
+Player.prototype.evaluateRoll = function(){
+  if (this.currentRoll !== 1) {
+      this.turnTotal += this.currentRoll;
+    }
+    else {
+      this.turnTotal = 0;
+      alert(playerArray[turn].nameOfPlayer + " your turn is over!");
+      changeTurn();
+    }
 }
 
 Player.prototype.turn = function(){
@@ -37,25 +43,68 @@ Player.prototype.turn = function(){
     playerWins = true;
   }
 }
-var play = function(){
+var createPlayers = function(){
   do{
-    var myPlayer = new Player("Player " + (numberOfPlayers+1),0,0);
+    var myPlayer = new Player("Player " + (numberOfPlayers+1));
     numberOfPlayers ++;
     playerArray.push(myPlayer);
   }while(numberOfPlayers < 2);
-
-  do{
-    for (var i = 0; i < playerArray.length; i++) {
-      playerArray[i].turn();
-      alert(playerArray[i].nameOfPlayer+ ": you scored: " + playerArray[i].scoreTotal);
-      if (playerWins){
-        console.log("Congratualtions Player " + playerArray[i].nameOfPlayer + " you win!!!");
-        break;
-      }
-    }
-  }while(!(playerWins));
 }
+var changeTurn = function(){
+  $(".score").remove();
+  updateScore();
+  if ((turn+1) < playerArray.length) {
+    turn++;
+  }
+  else{
+    turn = 0;
+  }
+}
+
+  // do{
+  //   for (var i = 0; i < playerArray.length; i++) {
+  //     playerArray[i].turn();
+  //     alert(playerArray[i].nameOfPlayer+ ": you scored: " + playerArray[i].scoreTotal);
+  //     if (playerWins){
+  //       console.log("Congratualtions Player " + playerArray[i].nameOfPlayer + " you win!!!");
+  //       break;
+  //     }
+  //   }
+  // }while(!(playerWins));
+
 // UI Logic
+var updateScore = function(){
+  for (i=0; i<playerArray.length; i++) {
+    $("#scoreboard").append("<li class = 'score'>" + playerArray[i].nameOfPlayer + ": " + "Score: " +  playerArray[i].scoreTotal + "</li>")
+  }
+}
 $(document).ready(function() {
- play();
+
+  $("#play").click(function() {
+    if(!started){
+      createPlayers();
+      updateScore();
+      started = true;
+      $("#roll").click(function(){
+        if(!playerWins){
+            playerArray[turn].roll();
+            $("#roll-details").text(playerArray[turn].nameOfPlayer + ": You Rolled a " + playerArray[turn].currentRoll);
+            playerArray[turn].evaluateRoll();
+            $("#turn-details").text(playerArray[turn].nameOfPlayer + ": Your Turn total is: " +playerArray[turn].turnTotal);
+        }
+        else ("Start a new game!")
+      });
+      $("#hold").click(function(){
+        if(!playerWins){
+
+
+        }
+        else ("Start a new game!")
+      });
+    }
+    else alert("Game in progress");
+
+
+  })
+
 });
