@@ -1,8 +1,11 @@
 // Business Logic
-var numberOfPlayers = 0;
-var turn = 0;
-var rollSuccess = true;
-var players = [];
+
+function Game(){
+  this.numberOfPlayers = 0;
+  this.turn = 0;
+  this.rollSuccess = true;
+  this.players = [];
+}
 
 function Player(name,score) {
   this.nameOfPlayer = name;
@@ -26,33 +29,31 @@ Player.prototype.evaluateRoll = function(){
     }
 }
 
-var createPlayers = function(){
-  do{
-    myPlayer = new Player("Player " + (numberOfPlayers+1));
-    numberOfPlayers ++;
-    players.push(myPlayer);
-  }while(numberOfPlayers < 2);
+Game.prototype.createPlayers = function(){
+    var myPlayer = new Player("Player " + (this.numberOfPlayers+1));
+    this.players.push(myPlayer);
+    this.numberOfPlayers++;
 }
 
-var changeTurn = function(){
+Game.prototype.changeTurn = function(){
   $(".score").remove();
-  updateScore();
-  players[turn].turnTotal = 0;
-  if ((turn+1) < players.length) {
-    turn++;
+  this.updateScore();
+  this.players[this.turn].turnTotal = 0;
+  if ((this.turn+1) < this.players.length) {
+    this.turn++;
   }
   else{
-    turn = 0;
+    this.turn = 0;
   }
 }
 
-var hold = function() {
-  players[turn].scoreTotal += players[turn].turnTotal;
-  changeTurn();
+Game.prototype.hold = function() {
+  this.players[this.turn].scoreTotal += this.players[this.turn].turnTotal;
+  this.changeTurn();
 }
 
-var win = function(){
-  if(players[turn].scoreTotal + players[turn].turnTotal >= 20) {
+Game.prototype.win = function(){
+  if(this.players[this.turn].scoreTotal + this.players[this.turn].turnTotal >= 20) {
     return true;
   }
   else {
@@ -60,58 +61,57 @@ var win = function(){
   }
 }
 
-var reset = function(){
-  turn = 0;
-  numberOfPlayers = 0;
-  alert(players.length);
-  for (var i = 0; i < players.length; i++) {
-    delete players[i].nameOfPlayer;
-    delete players[i].currentRoll;
-    delete players[i].turnTotal;
-    delete players[i].scoreTotal;
+Game.prototype.resetGame = function(){
+  this.turn = 0;
+  this.rollSuccess = true;
+  this.numberOfPlayers = 0;
+  for (var i = 0; i < this.players.length; i++) {
+    this.players[i].currentRoll = 0;
+    this.players[i].turnTotal = 0;
+    this.players[i].scoreTotal = 0;
   }
-  players = [];
 }
 
 // UI Logic
-var updateScore = function(){
-  for (i=0; i<players.length; i++) {
-    $("#scoreboard").append("<li class = 'score'>" + players[i].nameOfPlayer + ": " + "Score: " +  players[i].scoreTotal + "</li>");
+Game.prototype.updateScore = function(){
+  for (i=0; i<this.players.length; i++) {
+    $("#scoreboard").append("<li class = 'score'>" + this.players[i].nameOfPlayer + ": " + "Score: " +  this.players[i].scoreTotal + "</li>");
   }
 }
 $(document).ready(function() {
-
+  var myGame = new Game();
   $("#play").click(function() {
-      createPlayers();
-      $("#message").text("");
-      $("#start").hide();
-      $("#in-progress").fadeIn();
-      updateScore();
-      $("#roll").click(function(){
-        // $("#message").text("");
-        players[turn].roll();
-        $("#roll-details").text(players[turn].nameOfPlayer + ": You Rolled a " + players[turn].currentRoll);
-        rollSuccess = players[turn].evaluateRoll();
-        $("#turn-details").text(players[turn].nameOfPlayer + ": Your turn total is: " + players[turn].turnTotal);
-        if(!rollSuccess) {
-          changeTurn();
-          $("#message").text(players[turn].nameOfPlayer + "s Turn");
-        }else if(win()){
-          $("#message").text(players[turn].nameOfPlayer + " Wins!!!");
-          $(".score").remove();
-          $("#start").fadeIn();
-          $("#in-progress").hide();
-          $("#turn-details").text("");
-          $("#roll-details").text("");
-          reset();
-        }
-      });
-      $("#hold").click(function(){
-        if(rollSuccess){
-          hold();
-          $("#message").text(players[turn].nameOfPlayer + "s Turn");
-        }
-        else $("#message").text("You cant hold! You rolled a one!");
-      });
+    for (var i = 0; i < 2; i++) {
+      myGame.createPlayers();
+    }
+    $("#message").text("");
+    $("#start").hide();
+    $("#in-progress").fadeIn();
+    myGame.updateScore();
+  });
+  $("#roll").click(function(){
+    myGame.players[myGame.turn].roll();
+    $("#roll-details").text(myGame.players[myGame.turn].nameOfPlayer + ": You Rolled a " + myGame.players[myGame.turn].currentRoll);
+    myGame.rollSuccess = myGame.players[myGame.turn].evaluateRoll();
+    $("#turn-details").text(myGame.players[myGame.turn].nameOfPlayer + ": Your turn total is: " + myGame.players[myGame.turn].turnTotal);
+    if(!(myGame.rollSuccess)) {
+      myGame.changeTurn();
+      $("#message").text(myGame.players[myGame.turn].nameOfPlayer + "s Turn");
+    }else if(myGame.win()){
+      $("#message").text(myGame.players[myGame.turn].nameOfPlayer + " Wins!!!");
+      $(".score").remove();
+      $("#start").fadeIn();
+      $("#in-progress").hide();
+      $("#turn-details").text("");
+      $("#roll-details").text("");
+      myGame.resetGame();
+    }
+  });
+  $("#hold").click(function(){
+    if(myGame.rollSuccess){
+      myGame.hold();
+      $("#message").text(myGame.players[myGame.turn].nameOfPlayer + "s Turn");
+    }
+    else $("#message").text("You cant hold! You rolled a one!");
   });
 });
