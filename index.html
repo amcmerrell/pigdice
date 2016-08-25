@@ -15,6 +15,17 @@
           <h4 id="message"> </h4>
           <div id="start">
             <form>
+              <label>What type of game would you like to play?</label>
+              <div class="radio">
+                <label class="radio-inline">
+                  <input type="radio" name="GameType" value="multiplayer" checked>
+                  Multiplayer
+                </label>
+                <label class="radio-inline">
+                  <input type="radio" name="GameType" value="computer">
+                  Computer
+                </label>
+              </div>
               <div class="form-group">
                 <label for="players">How many players would you like to start with?</label>
                 <input type="number" id="players" class="form-control" value="2">
@@ -23,7 +34,7 @@
                 <label for="winning-number">What score do you want to play to?</label>
                 <input type="number" id= "winning-number" class="form-control" value="100">
               </div>
-              <button id="play" type="submit" class="btn btn-primary btn-lg">Start game</button>
+              <button type="submit" class="btn btn-primary btn-lg">Start game</button>
             </form>
           </div>
           <br>
