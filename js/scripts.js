@@ -3,8 +3,9 @@
 function Game(){
   this.numberOfPlayers = 0;
   this.turn = 0;
-  this.rollSuccess = true;
   this.players = [];
+  this.winningNumber = 0;
+  this.lastroll = true;
 }
 
 function Player(name,score) {
@@ -12,6 +13,7 @@ function Player(name,score) {
   this.currentRoll = 0;
   this.turnTotal = 0;
   this.scoreTotal = 0;
+  this.rollSuccess = true;
 }
 
 Player.prototype.roll = function(){
@@ -21,22 +23,21 @@ Player.prototype.roll = function(){
 Player.prototype.evaluateRoll = function(){
   if (this.currentRoll !== 1) {
       this.turnTotal += this.currentRoll;
-      return true;
+      this.rollSuccess = true;
     }
     else {
       this.turnTotal = 0;
-      return false;
+      this.rollSuccess = false;
     }
 }
 
 Game.prototype.createPlayers = function(){
     var myPlayer = new Player("Player " + (this.numberOfPlayers+1));
-    this.players.push(myPlayer);
+    this.players[this.numberOfPlayers] = myPlayer;
     this.numberOfPlayers++;
 }
 
 Game.prototype.changeTurn = function(){
-  $(".score").remove();
   this.updateScore();
   this.players[this.turn].turnTotal = 0;
   if ((this.turn+1) < this.players.length) {
@@ -53,7 +54,7 @@ Game.prototype.hold = function() {
 }
 
 Game.prototype.win = function(){
-  if(this.players[this.turn].scoreTotal + this.players[this.turn].turnTotal >= 20) {
+  if(this.players[this.turn].scoreTotal + this.players[this.turn].turnTotal >= this.winningNumber) {
     return true;
   }
   else {
@@ -63,25 +64,28 @@ Game.prototype.win = function(){
 
 Game.prototype.resetGame = function(){
   this.turn = 0;
-  this.rollSuccess = true;
+  this.lastroll = true;
   this.numberOfPlayers = 0;
   for (var i = 0; i < this.players.length; i++) {
-    this.players[i].currentRoll = 0;
-    this.players[i].turnTotal = 0;
-    this.players[i].scoreTotal = 0;
+    this.players.pop();
   }
 }
 
 // UI Logic
 Game.prototype.updateScore = function(){
+  $(".score").remove();
   for (i=0; i<this.players.length; i++) {
-    $("#scoreboard").append("<li class = 'score'>" + this.players[i].nameOfPlayer + ": " + "Score: " +  this.players[i].scoreTotal + "</li>");
+    $("#scoreboard").append("<li class = 'score'>" + this.players[i].nameOfPlayer + ": " + "Score: " +  this.players[i].scoreTotal + "</li>").hide().slideDown();
   }
 }
 $(document).ready(function() {
   var myGame = new Game();
-  $("#play").click(function() {
-    for (var i = 0; i < 2; i++) {
+  $("form").submit(function(event) {
+    event.preventDefault();
+    var numberOfPlayers = parseInt($("#players").val());
+    var winningNumber = parseInt($("#winning-number").val());
+    myGame.winningNumber = winningNumber;
+    for (var i = 0; i < numberOfPlayers; i++) {
       myGame.createPlayers();
     }
     $("#message").text("");
@@ -92,14 +96,14 @@ $(document).ready(function() {
   $("#roll").click(function(){
     myGame.players[myGame.turn].roll();
     $("#roll-details").text(myGame.players[myGame.turn].nameOfPlayer + ": You Rolled a " + myGame.players[myGame.turn].currentRoll);
-    myGame.rollSuccess = myGame.players[myGame.turn].evaluateRoll();
+    myGame.players[myGame.turn].evaluateRoll();
+    myGame.lastroll = myGame.players[myGame.turn].rollSuccess;
     $("#turn-details").text(myGame.players[myGame.turn].nameOfPlayer + ": Your turn total is: " + myGame.players[myGame.turn].turnTotal);
-    if(!(myGame.rollSuccess)) {
+    if(myGame.players[myGame.turn].rollSuccess === false) {
       myGame.changeTurn();
       $("#message").text(myGame.players[myGame.turn].nameOfPlayer + "s Turn");
     }else if(myGame.win()){
-      $("#message").text(myGame.players[myGame.turn].nameOfPlayer + " Wins!!!");
-      $(".score").remove();
+      $("#message").text(myGame.players[myGame.turn].nameOfPlayer +" rolled a " + myGame.players[myGame.turn].currentRoll + " and Wins!!!");
       $("#start").fadeIn();
       $("#in-progress").hide();
       $("#turn-details").text("");
@@ -108,7 +112,7 @@ $(document).ready(function() {
     }
   });
   $("#hold").click(function(){
-    if(myGame.rollSuccess){
+    if(myGame.lastroll){
       myGame.hold();
       $("#message").text(myGame.players[myGame.turn].nameOfPlayer + "s Turn");
     }

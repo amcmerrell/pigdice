@@ -11,7 +11,17 @@
     <div class="container">
       <h2>Pig Dice</h2>
       <div id="start">
-        <button id="play" type="button" class="btn btn-primary">Start game</button>
+        <form>
+          <div class="form-group">
+            <label for="players">How many players would you like to start with?</label>
+            <input type="text" id="players" class="form-control">
+          </div>
+          <div class="form-group">
+            <label for="winning-number">What score do you want to play to?</label>
+            <input type="text" id= "winning-number" class="form-control">
+          </div>
+          <button id="play" type="submit" class="btn btn-primary">Start game</button>
+        </form>
       </div>
       <div>
         <h4 id="message"> </h4>
