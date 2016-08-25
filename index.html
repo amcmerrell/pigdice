@@ -9,34 +9,46 @@
   </head>
   <body>
     <div class="container">
-      <h2>Pig Dice</h2>
-      <div id="start">
-        <form>
-          <div class="form-group">
-            <label for="players">How many players would you like to start with?</label>
-            <input type="text" id="players" class="form-control">
+      <div class="row">
+        <div class="col-xs-6 col-xs-offset-3">
+          <h1>Pig Dice</h1>
+          <h4 id="message"> </h4>
+          <div id="start">
+            <form>
+              <div class="form-group">
+                <label for="players">How many players would you like to start with?</label>
+                <input type="number" id="players" class="form-control" value="2">
+              </div>
+              <div class="form-group">
+                <label for="winning-number">What score do you want to play to?</label>
+                <input type="number" id= "winning-number" class="form-control" value="100">
+              </div>
+              <button id="play" type="submit" class="btn btn-primary btn-lg">Start game</button>
+            </form>
           </div>
-          <div class="form-group">
-            <label for="winning-number">What score do you want to play to?</label>
-            <input type="text" id= "winning-number" class="form-control">
+          <br>
+          <div id="in-progress">
+            <h4 id="roll-details"></h4>
+              <div id="die-roll">
+                <img class="die" id="number1" src="https://upload.wikimedia.org/wikipedia/commons/0/09/Dice-1.svg">
+                <img class="die" id="number2" src="https://upload.wikimedia.org/wikipedia/commons/3/34/Dice-2.svg">
+                <img class="die" id="number3" src="https://upload.wikimedia.org/wikipedia/commons/c/ca/Dice-3.svg">
+                <img class="die" id="number4" src="https://upload.wikimedia.org/wikipedia/commons/1/16/Dice-4.svg">
+                <img class="die" id="number5" src="https://upload.wikimedia.org/wikipedia/commons/d/dc/Dice-5.svg">
+                <img class="die" id="number6" src="https://upload.wikimedia.org/wikipedia/commons/1/14/Dice-6.svg">
+              </div>
+            <br>
+            <div id="buttons">
+              <h3 id="turn-details">&nbsp;<h3>
+              <button id="roll" type="button" class="btn btn-success btn-lg btn-block">Roll</button>
+              <button id="hold" type="button" class="btn btn-danger btn-lg btn-block">Hold</button>
+
+            </div>
+            <div id="scoreboard">
+              <h3>Scores</h3>
+            </div>
           </div>
-          <button id="play" type="submit" class="btn btn-primary">Start game</button>
-        </form>
-      </div>
-      <div>
-        <h4 id="message"> </h4>
-
-      </div>
-      <br>
-      <div id="in-progress">
-        <h4 id="roll-details"><h4>
-        <button id="roll" type="button" class="btn btn-success">Roll</button>
-        <button id="hold" type="button" class="btn btn-danger">Hold</button>
-        <h4 id="turn-details"><h4>
-        <h3>Scores</h3>
-        <ul id="scoreboard">
-
-        </ul>
+        </div>
       </div>
     </div>
   </body>

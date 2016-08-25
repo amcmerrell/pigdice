@@ -1,5 +1,4 @@
 // Business Logic
-
 function Game(){
   this.numberOfPlayers = 0;
   this.turn = 0;
@@ -75,9 +74,15 @@ Game.prototype.resetGame = function(){
 Game.prototype.updateScore = function(){
   $(".score").remove();
   for (i=0; i<this.players.length; i++) {
-    $("#scoreboard").append("<li class = 'score'>" + this.players[i].nameOfPlayer + ": " + "Score: " +  this.players[i].scoreTotal + "</li>").hide().slideDown();
+    $("#scoreboard").append("<div class = 'score'><strong>" + this.players[i].nameOfPlayer + "</strong> Score: " +  this.players[i].scoreTotal + "</div>").hide().fadeIn();
   }
 }
+
+Player.prototype.displayDie = function(){
+  $(".die").hide();
+  $("#number" + this.currentRoll).slideDown(50);
+}
+
 $(document).ready(function() {
   var myGame = new Game();
   $("form").submit(function(event) {
@@ -91,11 +96,14 @@ $(document).ready(function() {
     $("#message").text("");
     $("#start").hide();
     $("#in-progress").fadeIn();
+    $(".die").hide();
     myGame.updateScore();
   });
   $("#roll").click(function(){
+    $("#message").text("");
     myGame.players[myGame.turn].roll();
-    $("#roll-details").text(myGame.players[myGame.turn].nameOfPlayer + ": You Rolled a " + myGame.players[myGame.turn].currentRoll);
+    $("#roll-details").text(myGame.players[myGame.turn].nameOfPlayer);
+    myGame.players[myGame.turn].displayDie();
     myGame.players[myGame.turn].evaluateRoll();
     myGame.lastroll = myGame.players[myGame.turn].rollSuccess;
     $("#turn-details").text(myGame.players[myGame.turn].nameOfPlayer + ": Your turn total is: " + myGame.players[myGame.turn].turnTotal);
